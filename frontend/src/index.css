@@ -1,0 +1,562 @@
+/*
+ * TerraSense — Global Stylesheet
+ * Design tokens, Tailwind base, Leaflet overrides, custom scrollbar
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── CSS Custom Properties (TerraSense Design Tokens) ───────────────────────── */
+:root {
+  /* Default: Softer Dark Palette (Night Comfort Mode - Matte Charcoal, Anti-Glare) */
+  --ts-base:        #0F141C;
+  --ts-surface-1:   #151C28;
+  --ts-surface-2:   #1C2433;
+  --ts-border:      #2A3649;
+  --ts-border-muted:#384860;
+
+  /* 3D Floating Panel Elevation Tokens (Tactile Depth + Top Bevel Reflection) */
+  --ts-panel-shadow: 0 10px 25px -4px rgba(0, 0, 0, 0.70), 0 4px 10px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 0 rgba(255, 255, 255, 0.09);
+  --ts-panel-shadow-hover: 0 16px 32px -6px rgba(0, 0, 0, 0.80), 0 6px 14px -3px rgba(0, 0, 0, 0.60), inset 0 1px 0 0 rgba(255, 255, 255, 0.14);
+
+  /* Typography: warm soft off-white to eliminate halation / glare */
+  --ts-text:        #CBD5E1;
+  --ts-text-2:      #94A3B8;
+  --ts-text-3:      #64748B;
+
+  /* Restrained TerraSense Brand Accent — Indigo-Blue (#6C7CFF) */
+  --ts-accent:       #6C7CFF;
+  --ts-accent-dim:   #505EDB;
+  --ts-accent-faint: rgba(108, 124, 255, 0.12);
+
+  /* Semantic Hazard Colors (PRESERVED SAFETY CONVENTIONS) */
+  --risk-high:     #EF4444;
+  --risk-moderate: #F97316;
+  --risk-low:      #22C55E;
+
+  /* Legacy compatibility aliases */
+  --bg-base:        var(--ts-base);
+  --bg-surface-1:   var(--ts-surface-1);
+  --bg-surface-2:   var(--ts-surface-2);
+  --border-dim:     var(--ts-border);
+  --border-muted:   var(--ts-border-muted);
+  --text-primary:   var(--ts-text);
+  --text-secondary: var(--ts-text-2);
+  --text-muted:     var(--ts-text-3);
+  --accent:         var(--ts-accent);
+}
+
+/* Light / Day Mode (High-Definition 3D Floating Panels with Crisp Dark Borders) */
+html.light,
+body.light {
+  --ts-base:        #F8FAFC;
+  --ts-surface-1:   #FFFFFF;
+  --ts-surface-2:   #F1F5F9;
+  --ts-border:      #0F172A; /* Crisp solid black/dark slate border */
+  --ts-border-muted:#334155;
+
+  /* 3D Floating Elevation on Light Background */
+  --ts-panel-shadow: 0 10px 25px -4px rgba(15, 23, 42, 0.10), 0 4px 8px -2px rgba(15, 23, 42, 0.06), inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
+  --ts-panel-shadow-hover: 0 16px 32px -6px rgba(15, 23, 42, 0.16), 0 8px 14px -3px rgba(15, 23, 42, 0.10), inset 0 1px 0 0 rgba(255, 255, 255, 1);
+
+  --ts-text:        #0F172A;
+  --ts-text-2:      #1E293B;
+  --ts-text-3:      #475569;
+
+  --ts-accent:       #4F46E5;
+  --ts-accent-dim:   #4338CA;
+  --ts-accent-faint: rgba(79, 70, 229, 0.10);
+
+  /* Legacy compatibility aliases */
+  --bg-base:        var(--ts-base);
+  --bg-surface-1:   var(--ts-surface-1);
+  --bg-surface-2:   var(--ts-surface-2);
+  --border-dim:     var(--ts-border);
+  --border-muted:   var(--ts-border-muted);
+  --text-primary:   var(--ts-text);
+  --text-secondary: var(--ts-text-2);
+  --text-muted:     var(--ts-text-3);
+  --accent:         var(--ts-accent);
+}
+
+/* ── Base Reset & Global Styles ─────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ── Two-Column Operational Dashboard Layout ────────────────────────────── */
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: minmax(440px, 0.95fr) minmax(520px, 1.25fr);
+  gap: 22px;
+  align-items: start;
+}
+
+.dashboard-content {
+  min-width: 0;
+}
+
+.map-column {
+  position: sticky;
+  top: 74px;
+  height: calc(100vh - 92px);
+  min-height: 600px;
+}
+
+@media (max-width: 1100px) {
+  .dashboard-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .map-column {
+    position: relative;
+    top: auto;
+    height: 620px;
+  }
+}
+
+/* ── Custom Scrollbar ───────────────────────────────────────────────────────── */
+::-webkit-scrollbar         { width: 6px; height: 6px; }
+::-webkit-scrollbar-track   { background: var(--bg-surface-1); }
+::-webkit-scrollbar-thumb   { background: var(--border-muted); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+/* ── Focus Visible Ring (Accessibility) ─────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ── Leaflet Dark Theme Overrides ───────────────────────────────────────────── */
+.leaflet-container {
+  background: #0a0f1e !important;
+  font-family: 'Inter', system-ui, sans-serif !important;
+}
+
+/* Zoom controls */
+.leaflet-bar a {
+  background-color: #0F172A !important;
+  border-color: #334155 !important;
+  color: #94A3B8 !important;
+  transition: background-color 0.15s, color 0.15s;
+}
+.leaflet-bar a:hover {
+  background-color: #1E293B !important;
+  color: #F1F5F9 !important;
+}
+.leaflet-bar a.leaflet-disabled {
+  background-color: #0F172A !important;
+  color: #334155 !important;
+}
+
+/* Attribution */
+.leaflet-control-attribution {
+  background: rgba(11, 17, 32, 0.85) !important;
+  color: #475569 !important;
+  font-size: 10px !important;
+  border-top: 1px solid #1E293B !important;
+}
+.leaflet-control-attribution a {
+  color: #64748B !important;
+}
+
+/* ── Basemap Enhancements for Landslide & Topography ──────────────────────── */
+/* Satellite image visual enhancement — rich contrast for steep mountain slopes */
+.satellite-vibrant .leaflet-tile {
+  filter: contrast(1.08) brightness(1.02) saturate(1.12);
+}
+
+/* Terrain topo enhancement — sharpened relief shading */
+.terrain-sharp .leaflet-tile {
+  filter: contrast(1.05) saturate(1.08);
+}
+
+/* OpenStreetMap dark mode filter for disaster monitoring theme fallback */
+.osm-dark-tiles .leaflet-tile {
+  filter: brightness(0.6) invert(1) contrast(2.4) hue-rotate(200deg) saturate(0.25) brightness(0.75);
+}
+
+/* Pulsing highlight for selected cell marker */
+@keyframes pulse-ring {
+  0% { transform: scale(0.95); opacity: 0.9; }
+  50% { transform: scale(1.35); opacity: 0.4; }
+  100% { transform: scale(0.95); opacity: 0.9; }
+}
+
+.selected-marker-pulse {
+  animation: pulse-ring 2s infinite ease-in-out;
+  transform-origin: center;
+}
+
+
+/* Popup */
+.leaflet-popup-content-wrapper {
+  background: #0F172A !important;
+  border: 1px solid #334155 !important;
+  border-radius: 10px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+  color: #F1F5F9 !important;
+}
+.leaflet-popup-tip-container .leaflet-popup-tip {
+  background: #0F172A !important;
+}
+.leaflet-popup-close-button {
+  color: #64748B !important;
+}
+.leaflet-popup-close-button:hover {
+  color: #F1F5F9 !important;
+  background: transparent !important;
+}
+
+/* ── Leaflet Dark Tooltip Overrides (Hover popups on map dots) ───────────── */
+.leaflet-tooltip,
+.terrasense-dark-tooltip {
+  background: #0B1120 !important;
+  background-color: #0B1120 !important;
+  border: 1px solid #334155 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.8), 0 8px 10px -6px rgba(0, 0, 0, 0.8) !important;
+  color: #F8FAFC !important;
+  padding: 6px 10px !important;
+  font-size: 11px !important;
+  line-height: 1.4 !important;
+  letter-spacing: 0.01em !important;
+  white-space: normal !important;
+}
+
+/* Tooltip Arrow / Pointer Tips */
+.leaflet-tooltip-top:before {
+  border-top-color: #0B1120 !important;
+}
+.leaflet-tooltip-bottom:before {
+  border-bottom-color: #0B1120 !important;
+}
+.leaflet-tooltip-left:before {
+  border-left-color: #0B1120 !important;
+}
+.leaflet-tooltip-right:before {
+  border-right-color: #0B1120 !important;
+}
+
+/* Leaflet Light Mode Overrides */
+html.light .leaflet-popup-content-wrapper {
+  background: #FFFFFF !important;
+  border: 2px solid #0F172A !important;
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.22) !important;
+  color: #0F172A !important;
+}
+html.light .leaflet-popup-tip-container .leaflet-popup-tip {
+  background: #FFFFFF !important;
+}
+html.light .leaflet-popup-close-button {
+  color: #334155 !important;
+}
+html.light .leaflet-tooltip,
+html.light .terrasense-dark-tooltip {
+  background: #FFFFFF !important;
+  border: 1.5px solid #0F172A !important;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.15) !important;
+  color: #0F172A !important;
+}
+html.light .leaflet-tooltip-top:before {
+  border-top-color: #FFFFFF !important;
+}
+html.light .leaflet-tooltip-bottom:before {
+  border-bottom-color: #FFFFFF !important;
+}
+html.light .leaflet-tooltip-left:before {
+  border-left-color: #FFFFFF !important;
+}
+html.light .leaflet-tooltip-right:before {
+  border-right-color: #FFFFFF !important;
+}
+html.light .leaflet-bar a {
+  background-color: #FFFFFF !important;
+  border-color: #0F172A !important;
+  color: #0F172A !important;
+}
+html.light .leaflet-bar a:hover {
+  background-color: #F1F5F9 !important;
+  color: #0F172A !important;
+}
+
+/* ── Utility Classes ─────────────────────────────────────────────────────────── */
+@layer utilities {
+  /* Direct Semantic & Theme Utility Classes */
+  .bg-ts-base { background-color: var(--ts-base) !important; }
+  .bg-ts-surface1 { background-color: var(--ts-surface-1) !important; }
+  .bg-ts-surface2 { background-color: var(--ts-surface-2) !important; }
+  .border-ts-border { border-color: var(--ts-border) !important; }
+  .border-ts-borderMuted { border-color: var(--ts-border-muted) !important; }
+  .text-ts-text { color: var(--ts-text) !important; }
+  .text-ts-text2 { color: var(--ts-text-2) !important; }
+  .text-ts-text3 { color: var(--ts-text-3) !important; }
+  .text-ts-accent { color: var(--ts-accent) !important; }
+  .bg-ts-accent { background-color: var(--ts-accent) !important; }
+  .shadow-ts-panel { box-shadow: var(--ts-panel-shadow) !important; }
+  .shadow-ts-panel-hover:hover { box-shadow: var(--ts-panel-shadow-hover) !important; }
+
+  /* 3D Floating Panel System (Deep ambient elevation + bevel top highlight) */
+  .ts-panel,
+  .ts-card {
+    background-color: var(--ts-surface-1);
+    border: 1px solid var(--ts-border);
+    box-shadow: var(--ts-panel-shadow);
+    transition: box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.2s ease,
+                transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .ts-panel-interactive,
+  .ts-card-interactive {
+    background-color: var(--ts-surface-1);
+    border: 1px solid var(--ts-border);
+    box-shadow: var(--ts-panel-shadow);
+    transition: box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.2s ease,
+                transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .ts-panel-interactive:hover,
+  .ts-card-interactive:hover {
+    box-shadow: var(--ts-panel-shadow-hover);
+    transform: translateY(-2px);
+  }
+
+  /* ── Universal Light Mode: Crisp Solid Dark/Black Outlines & 3D Pop-Up Shadows Everywhere ── */
+  html.light .border,
+  html.light .border-t,
+  html.light .border-b,
+  html.light .border-l,
+  html.light .border-r,
+  html.light [class*="border-ts-border"],
+  html.light [class*="border-slate-"] {
+    border-color: #0F172A !important;
+  }
+
+  html.light .rounded-lg.border,
+  html.light .rounded-xl.border,
+  html.light .rounded-2xl.border,
+  html.light .rounded-md.border,
+  html.light .ts-panel,
+  html.light .ts-card,
+  html.light [class*="bg-ts-surface"] {
+    border-color: #0F172A !important;
+    box-shadow: 0 4px 14px -2px rgba(15, 23, 42, 0.12), 0 2px 6px -1px rgba(15, 23, 42, 0.08) !important;
+  }
+
+  html.light .hover\:-translate-y-0\.5:hover,
+  html.light .hover\:shadow-ts-panel-hover:hover,
+  html.light .ts-panel-interactive:hover,
+  html.light .ts-card-interactive:hover {
+    box-shadow: 0 8px 22px -3px rgba(15, 23, 42, 0.18), 0 4px 10px -2px rgba(15, 23, 42, 0.12) !important;
+  }
+
+  html.light .text-slate-100,
+  html.light .text-slate-200,
+  html.light .text-slate-300 {
+    color: #0F172A !important;
+  }
+
+  html.light .text-slate-400 {
+    color: #1E293B !important;
+  }
+
+  html.light .text-slate-500 {
+    color: #334155 !important;
+  }
+
+  html.light input,
+  html.light select,
+  html.light textarea {
+    color: #0F172A !important;
+  }
+
+  /* ── Universal Dark Mode: Tactile 3D Chamfered Floating Elevation Everywhere ── */
+  html:not(.light) .rounded-lg.border,
+  html:not(.light) .rounded-xl.border,
+  html:not(.light) .rounded-2xl.border,
+  html:not(.light) .ts-panel,
+  html:not(.light) .ts-card {
+    box-shadow: 0 10px 25px -4px rgba(0, 0, 0, 0.70), 0 4px 10px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 0 rgba(255, 255, 255, 0.09) !important;
+  }
+
+  html:not(.light) .hover\:-translate-y-0\.5:hover,
+  html:not(.light) .hover\:shadow-ts-panel-hover:hover,
+  html:not(.light) .ts-panel-interactive:hover,
+  html:not(.light) .ts-card-interactive:hover {
+    box-shadow: 0 16px 32px -6px rgba(0, 0, 0, 0.80), 0 6px 14px -3px rgba(0, 0, 0, 0.60), inset 0 1px 0 0 rgba(255, 255, 255, 0.14) !important;
+  }
+
+  /* Glassmorphism system — Primary, Secondary, Subtle, and State Pin layers */
+  .glass-card {
+    background: rgba(15, 23, 42, 0.75);
+    border: 1px solid rgba(51, 65, 85, 0.5);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .glass-panel-primary {
+    background: rgba(9, 15, 26, 0.72);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.65), inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
+  }
+
+  .glass-panel-secondary {
+    background: rgba(15, 23, 42, 0.62);
+    backdrop-filter: blur(14px) saturate(130%);
+    -webkit-backdrop-filter: blur(14px) saturate(130%);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.45), inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+  }
+
+  .glass-panel-subtle {
+    background: rgba(10, 15, 26, 0.50);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.35);
+  }
+
+  .glass-state-pin {
+    background: rgba(12, 19, 34, 0.82);
+    backdrop-filter: blur(16px) saturate(150%);
+    -webkit-backdrop-filter: blur(16px) saturate(150%);
+    border: 1px solid rgba(56, 189, 248, 0.30);
+    box-shadow: 0 10px 30px -4px rgba(0, 0, 0, 0.7), 0 0 20px -2px rgba(56, 189, 248, 0.20), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  }
+
+  .glass-glow-sky {
+    box-shadow: 0 0 24px -2px rgba(56, 189, 248, 0.35), inset 0 0 14px rgba(56, 189, 248, 0.1);
+    border-color: rgba(56, 189, 248, 0.45);
+  }
+
+  /* Shimmer skeleton loading state */
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      #1E293B 25%,
+      #334155 50%,
+      #1E293B 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+
+  /* Stagger animation delays for card sequences */
+  .delay-0   { animation-delay: 0ms; }
+  .delay-100 { animation-delay: 100ms; }
+  .delay-200 { animation-delay: 200ms; }
+  .delay-300 { animation-delay: 300ms; }
+  .delay-400 { animation-delay: 400ms; }
+
+  /* Opacity 0 base for animate-fade-in-up children */
+  .anim-hidden { opacity: 0; }
+}
+
+/* ── Range Slider (What-If Simulator) ──────────────────────────────────────── */
+input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: #334155;
+  outline: none;
+  cursor: pointer;
+  width: 100%;
+}
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #22D3EE;
+  border: 2px solid #0F172A;
+  box-shadow: 0 0 6px rgba(34, 211, 238, 0.4);
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+input[type='range']::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  box-shadow: 0 0 10px rgba(34, 211, 238, 0.6);
+}
+input[type='range']::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #22D3EE;
+  border: 2px solid #0F172A;
+  cursor: pointer;
+}
+
+/* ── 3D Weather Map & Atmospheric Effects ──────────────────────────────────── */
+@keyframes rain-pulse {
+  0% { transform: scale(1); opacity: 0.7; }
+  50% { transform: scale(1.4); opacity: 0.15; }
+  100% { transform: scale(1); opacity: 0.7; }
+}
+
+@keyframes cloud-drift {
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(4px, -2px); }
+  100% { transform: translate(0, 0); }
+}
+
+.rain-halo-pulse {
+  animation: rain-pulse 2.5s infinite ease-out;
+  transform-origin: center;
+}
+
+.cloud-drift-anim {
+  animation: cloud-drift 8s infinite ease-in-out;
+  transform-origin: center;
+}
+
+.weather-map-3d-container {
+  perspective: 1200px;
+  transform-style: preserve-3d;
+}
+
+.weather-3d-tilt {
+  transform: rotateX(8deg);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 40px -10px rgba(6, 182, 212, 0.15);
+}
+
+.weather-3d-flat {
+  transform: rotateX(0deg);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Rain streaks overlay animation */
+@keyframes rain-streak {
+  0% { transform: translateY(-10px); opacity: 0; }
+  30% { opacity: 0.7; }
+  100% { transform: translateY(18px); opacity: 0; }
+}
+
+.rain-streak-particle {
+  animation: rain-streak 0.9s infinite linear;
+}
+

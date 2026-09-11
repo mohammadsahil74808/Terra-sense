@@ -1,0 +1,59 @@
+{
+  "project": "TerraSense",
+  "artifact": "Frozen Production ML Model",
+  "version": "v1",
+  "stage": "Stage 1 \u2014 Static Susceptibility",
+  "training": {
+    "start": "2007-01-01",
+    "end": "2014-12-31",
+    "total_cells": 2534,
+    "positive_cells": 153,
+    "negative_cells": 2381,
+    "positive_rate_percent": 6.037885
+  },
+  "label_sources": {
+    "NASA_positive_cells": 128,
+    "GSI_training_cells": 38,
+    "NASA_GSI_overlap": 13,
+    "new_GSI_cells": 25,
+    "combined_positive_cells": 153
+  },
+  "model": {
+    "algorithm": "RandomForestClassifier",
+    "n_estimators": 500,
+    "min_samples_leaf": 2,
+    "class_weight": {
+      "0": 1.0,
+      "1": 4.961
+    },
+    "random_state": 42
+  },
+  "features": [
+    "lulc_dominant_percentage",
+    "clay_0_30_pct",
+    "sand_0_30_pct",
+    "bulk_density_0_30_kg_dm3",
+    "distance_to_river_km",
+    "distance_to_road_km",
+    "elevation",
+    "slope",
+    "lulc_class"
+  ],
+  "rainfall_config": {
+    "rainfall_scale": 165.22,
+    "extreme_rain_p95_mm": 349.392,
+    "extreme_risk_floor": 0.67,
+    "low_limit": 0.33,
+    "high_limit": 0.66
+  },
+  "validation": {
+    "2015": "Temporal validation only",
+    "2016": "LOCKED blind test \u2014 not used for fitting"
+  },
+  "artifacts": {
+    "model": "terrasense_model_v1.pkl",
+    "susceptibility": "terrasense_susceptibility_2534_cells.parquet",
+    "training_positive_cells": "terrasense_training_positive_cells.csv"
+  },
+  "status": "FROZEN"
+}

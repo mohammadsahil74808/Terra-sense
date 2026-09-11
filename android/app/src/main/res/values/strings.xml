@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">TerraSense Alerts</string>
+    <string name="channel_name">TerraSense Landslide Alerts</string>
+    <string name="channel_description">High-priority push notifications for landslide risk events.</string>
+</resources>
