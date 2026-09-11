@@ -32,8 +32,10 @@ env/
 node_modules/
 dist/
 build/
+.vite/
 .npm
 .eslintcache
+*.db.bak
 
 # Android & Gradle
 .gradle/
